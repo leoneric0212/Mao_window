@@ -1,5 +1,5 @@
 # 第二次作業
-程式碼
+[程式碼](https://github.com/leoneric0212/Mao_window/blob/main/homework/issue6/aqi.json)
 
 請將以下網址的json,儲存為aqi.json檔
 https://data.moenv.gov.tw/api/v2/aqx_p_488?api_key=e8dd42e6-9b8b-43f8-991e-b3dee723a52d&limit=1000&sort=datacreationdate%20desc&format=JSON'
