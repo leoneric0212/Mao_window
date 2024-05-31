@@ -21,3 +21,5 @@ if __name__=='__main__':
     names:list[str]=get_names()
     window:Window= Window(title='拍森')
     window.mainloop()
+
+    
