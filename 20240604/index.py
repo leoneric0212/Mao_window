@@ -10,8 +10,6 @@ class Window(ThemedTk):             #套用外觀套件
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
         self.title("空氣品質指標AQQIII顯示")    #設定標題
-        # self.option_add("*Font","微軟正黑體 40 bold")    #設定文字字體、粗細、大小顏色
-        #定義style的名稱
         style=ttk.Style()           #tk直接設定background，而ttk則是設定frame及style
         style.configure('Top.TFrame')  #設定容器，老師也是上網查，設定名稱是網站建議命名為TFrame，背景色為background="色號"
         style.configure('Top.TLabel',font=('Helvetica',25,'bold'))    #設定文字，及字底下顏色
@@ -47,22 +45,13 @@ class ShowInfo(Dialog):     #用來繼承dialog，並修改內容
         super().__init__(**kwargs)
 
     def body(self,master):
-        text=tk.Text(self,height=5,font=('Helvetica',12)) #state用於讓使用者無法在裡面輸入
+        text=tk.Text(self,height=5,font=('Helvetica',12)) 
         text.pack(padx=10,pady=10)  
         text.insert(tk.INSERT,"測試文字")
-        text.config(state='normal')
+        text.config(state='normal')     #state用於讓使用者無法在裡面輸入
         return None
 
 def main():
-    '''
-    try:
-        all_data:dict[any]=tools.download_json()
-    except Exception as error:
-        print(error)
-    else:
-        data:list[dict]=tools.get_data(all_data)
-        pprint(data)
-    '''
     window=Window(theme="arc")  #利用套件，設定顏色
     window.mainloop()
 
