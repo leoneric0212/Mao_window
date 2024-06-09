@@ -13,6 +13,6 @@ class Window(tk.Tk):
 
         ttk.Button(self,text='屁股').pack()
 
-if __name__ == '__main__':
-    window:Window=Window()
-    window.mainloop()
+# if __name__ == '__main__':
+window:Window=Window()
+window.mainloop()
