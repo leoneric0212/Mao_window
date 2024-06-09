@@ -7,20 +7,19 @@ class Window(tk.Tk):
         super().__init__()
 
         self.title('BMI計算器')
-        # self.geometry("500x400")
-        # self.resizable(True,False)
+        
         self.name_label=tk.Label(self,text="姓名：",font=('微軟正黑體',20,'bold'))      #設定文字格式
-        self.name_label.grid(row=0,sticky=tk.W,pady=20)                               #設定位置
+        self.name_label.grid(row=0,sticky=tk.N,pady=20)                               #設定位置
         self.name_entry=tk.Entry(self,font=('標楷體',20),width=10)                     #設定答案欄格式
         self.name_entry.grid(row=0,column=1,sticky=tk.W,padx=10)                      #設定答案欄位置
 
         self.height_label=tk.Label(self,text="身高(cm)：",font=('微軟正黑體',20,'bold'))
-        self.height_label.grid(row=1,sticky=tk.W,pady=20)
+        self.height_label.grid(row=1,sticky=tk.N,pady=20)
         self.height_entry=tk.Entry(self,font=('標楷體',20),width=10)
         self.height_entry.grid(row=1,column=1,sticky=tk.W,padx=10)
 
         self.weight_label=tk.Label(self,text="體重(kg)：",font=('微軟正黑體',20,'bold'))
-        self.weight_label.grid(row=2,sticky=tk.W,pady=20)
+        self.weight_label.grid(row=2,sticky=tk.N,pady=20)
         self.weight_entry=tk.Entry(self,font=('標楷體',20),width=10)
         self.weight_entry.grid(row=2,column=1,sticky=tk.W,padx=10)
 
