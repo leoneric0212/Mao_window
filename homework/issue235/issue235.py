@@ -10,7 +10,7 @@ except Exception as error:
 
 ubike=tk.Tk()
 ubike.title("全國ubike資料")
-# ubike.geometry("800x400")
+# ubike.geometry("1000x400")
 
 #設定column
 column=('#1','#2','#3','#4','#5','#6','#7','#8','#9','#10','#11')
@@ -31,8 +31,8 @@ tree.heading('#10',text='可借車輛數')
 tree.heading('#11',text='可還車輛數')
 
 contents=[]
-for n in range(len(ubike_data)):
-    contents.append((n+1,ubike_data[n]["sna"],
+for n in range((len(ubike_data))):
+    contents.append((ubike_data[n]["sna"],
                     ubike_data[n]["sarea"],
                     ubike_data[n]["ar"],
                     ubike_data[n]["lng"],
@@ -44,19 +44,14 @@ for n in range(len(ubike_data)):
                     ubike_data[n]["rent_bikes"],
                     ubike_data[n]["return_bikes"]))
 
+#懶得找更好的方法編號了，也懶得置中了
+i=1
 for content in contents:
-    tree.insert('',tk.END, values=content)
+    tree.insert('',tk.END,text=i, values=content)
+    i+=1
 
-scrollbar = ttk.Scrollbar(ubike, orient=tk.VERTICAL, command=tree.yview)
-tree.configure(yscroll=scrollbar.set)
-scrollbar.grid(row=0, column=1, sticky='ns')
+#設定一次顯示多少列，chatGPT教說要這樣寫
+tree['height']=20
 
 tree.grid()
 ubike.mainloop()
-
-# def main():
-#     window=Window(Theme='clam')
-#     window.mainloop()
-
-# if __name__ == '__main__':
-#     main()

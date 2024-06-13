@@ -27,9 +27,16 @@ class Info(BaseModel):
     lng:float = Field(alias="longitude")
     return_bikes:int = Field(alias="available_return_bikes")
 
-    @field_serializer('site_name')
+    @field_serializer('sna')
     def serialize_split(self,value:str) -> str:
         return value.split("_")[-1] #將資料從"_"處切割，並且只留右邊的資料
+    
+    @field_serializer("act")
+    def serialize_act(self,value:bool) -> str:
+        if bool:
+            return "營業中"
+        else :
+            return "維護中"
 
 class Youbike_Data(RootModel):
     root:list[Info]
