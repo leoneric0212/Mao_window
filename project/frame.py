@@ -1,6 +1,7 @@
 from ttkthemes import ThemedTk
 import tkinter as tk
 from tkinter import ttk,Checkbutton, messagebox,Misc
+from tkintermapview import TkinterMapView
 import data
 from os import system
 system('cls')
@@ -19,13 +20,14 @@ class Window(tk.Tk):
         mainframe=ttk.Frame(self)
         mainframe.pack(expand=True,fill='both',padx=10,pady=10)
         
-        #左上欄位，使用labelframe賦予邊框與標題
-        self.left_top_frame=ttk.Labelframe(mainframe,border=5,labelanchor='n',text="查詢條件")
-        self.left_top_frame.grid(column=0,row=0)
+        #左上條件欄位，使用labelframe賦予邊框與標題
+        self.left_top_frame=ttk.Labelframe(mainframe,border=5,labelanchor='n',text="查詢條件",height=600)
+        self.left_top_frame.grid(column=0,row=0,sticky=tk.NW)
         
         #設定日期
-        date_frame=ttk.Labelframe(self.left_top_frame,labelanchor='nw',text="日期")
+        date_frame=ttk.Labelframe(self.left_top_frame,labelanchor='nw',text="日期",width=500,height=80)
         date_frame.grid(column=0,row=0,sticky=tk.W)
+        date_frame.grid_propagate(False)
         years=list(range(2018,2025))
         months=list(range(1,13))
         days=list(range(1,32))
@@ -70,32 +72,95 @@ class Window(tk.Tk):
         self.end_month.bind("<<ComboboxSelected>>",self.Update_end_dates)
         
         #設定縣市
-        city_frame=ttk.Labelframe(self.left_top_frame,labelanchor='nw',text="縣市：")
+        city_frame=ttk.Labelframe(self.left_top_frame,labelanchor='nw',text="縣市：",width=500,height=120)
         city_frame.grid(column=0,row=1,sticky=tk.W)
+        city_frame.grid_propagate(False)
 
         cities=["臺北市","新北市","基隆市","桃園市","新竹市","新竹縣","苗栗縣","臺中市","臺中縣","彰化縣","南投縣","雲林縣","嘉義市","嘉義縣","臺南市","高雄市","宜蘭縣","花蓮縣","臺東縣","澎湖縣","金門縣","連江縣"]
         self.city_vars={city:tk.BooleanVar(value=False) for city in cities} #儲存按鈕的布林值
         self.select_all_button=ttk.Button(city_frame,text="全選",command=self.select_all)
         self.select_all_button.grid(column=0,row=1)
         for i, city in enumerate(cities):
-            check = ttk.Checkbutton(city_frame, text=city, variable=self.city_vars[city])
-            check.grid(column=i%6+1,row=i//6)
+            city_check = ttk.Checkbutton(city_frame, text=city, variable=self.city_vars[city])
+            city_check.grid(column=i%6+1,row=i//6)
         # show_button = ttk.Button(mainframe, text="顯示選擇", command=self.show_selection)
         # show_button.grid(column=0,row=3)
-           
-    
         
+        #設定進階選項   
+        extra_frame=ttk.Labelframe(self.left_top_frame,labelanchor='nw',text="進階選項：",width=500,height=110)
+        extra_frame.grid(column=0,row=2,sticky=tk.W)
+        extra_frame.grid_propagate(False)
+                
+        #設定天氣
+        weather_label=ttk.Label(extra_frame,text="天候：")
+        weather_label.grid(column=0,row=1,sticky=tk.W)
+        weathers=["晴天","陰天","雨天"]
+        self.weather_vars={weather:tk.BooleanVar(value=True) for weather in weathers} #儲存按鈕的布林值
+        for i , weather in enumerate(weathers):
+            weather_check = ttk.Checkbutton(extra_frame, text=weather, variable=self.weather_vars[weather])
+            weather_check.grid(column=i+1,row=1,sticky=tk.W)
+        check_values_button = ttk.Button(extra_frame, text="取得值", command=self.get_weather_values)   #這兩行用於確認資料取得形式的範例，再刪除
+        check_values_button.grid(column=4, row=1,sticky=tk.W)
+        #設定光線狀態
+        light_label=ttk.Label(extra_frame,text="光線：")
+        light_label.grid(column=0,row=2,sticky=tk.W)
+        lights=["日間自然光線","夜間(或隧道)有照明","有照明且開啟","無照明","晨或暮光","夜間(或隧道)無照明","有照明未開啟或故障"]
+        self.light_vars={light:tk.BooleanVar(value=True) for light in lights} #儲存按鈕的布林值
+        for i , light in enumerate(lights):
+            light_check = ttk.Checkbutton(extra_frame, text=light, variable=self.light_vars[light])
+            light_check.grid(column=i%4+1,row=i//4+2,sticky=tk.W)
+        #設定是否為肇逃
+        run_label=ttk.Label(extra_frame,text="肇逃：")
+        run_label.grid(column=0,row=4,sticky=tk.W)
+        runs=["是","否"]
+        self.run_vars={run:tk.BooleanVar(value=True) for run in runs}
+        for i , run in enumerate(runs):
+            run_check = ttk.Checkbutton(extra_frame, text=run, variable=self.run_vars[run])
+            run_check.grid(column=i%4+1,row=i//4+4,sticky=tk.W)
         
+        #設定小計案件類別   
+        count_frame=ttk.Labelframe(self.left_top_frame,labelanchor='nw',text="類別小計：",width=500,height=80)
+        count_frame.grid(column=0,row=3,sticky=tk.W)
+        count_frame.grid_propagate(False)
+        A1_label=ttk.Label(count_frame,text=f"A1案件：XX 件")
+        A1_label.grid(column=0,row=0)
+        A2_label=ttk.Label(count_frame,text=f"A2案件：XX 件")
+        A2_label.grid(column=0,row=1)
+
+        #右上地圖欄位
+        self.right_top_frame=ttk.Labelframe(mainframe,border=5,labelanchor='n',text="事故地圖")
+        self.right_top_frame.grid(column=1,row=0)
+        map=TkinterMapView(self.right_top_frame,width=800,height=400)
+        map.grid(column=0,row=0)
+        mapdefault=map.set_position(25.115035182309448, 121.53834876780614,marker=True)
         
+        #下方資料欄位
+        self.bottom_frame=ttk.Labelframe(mainframe,border=5,labelanchor='nw',text="詳細資料",width=800)
+        self.bottom_frame.grid(column=0,row=1,columnspan=2,sticky=tk.NW)
         
-        weatherlabel=ttk.Label(self.left_top_frame,text="天候：")
-        weatherlabel.grid(column=0,row=2,sticky=tk.W)
-        
-        brightnesslabel=ttk.Label(self.left_top_frame,text="光線：")
-        brightnesslabel.grid(column=0,row=3,sticky=tk.W)
-        
-        hitandrunlabel=ttk.Label(self.left_top_frame,text="肇逃：")
-        hitandrunlabel.grid(column=0,row=4,sticky=tk.W)
+        #設定column
+        columns=('#1','#2','#3','#4','#5','#6','#7','#8')
+        tree=ttk.Treeview(self.bottom_frame,columns=columns,show='tree headings')
+        #設定heading
+        tree.heading('#0',text='日期')
+        tree.column('#0', minwidth=60,width=150)
+        tree.heading('#1',text='時間')
+        tree.column('#1', minwidth=60,width=150)
+        tree.heading('#2',text='事故類別')
+        tree.column('#2', minwidth=60,width=150)
+        tree.heading('#3',text='地區')
+        tree.column('#3', minwidth=60,width=150)
+        tree.heading('#4',text='事故類別')
+        tree.column('#4', minwidth=60,width=150)
+        tree.heading('#5',text='天氣')
+        tree.column('#5', minwidth=60,width=150)
+        tree.heading('#6',text='光線狀態')
+        tree.column('#6', minwidth=60,width=150)
+        tree.heading('#7',text='肇因研判')
+        tree.column('#7', minwidth=60,width=150)
+        tree.heading('#8',text='肇事逃逸')
+        tree.column('#8', minwidth=60,width=150)
+        tree.grid(column=0,row=0)
    
     
     def Update_end_dates(self,event):   #自動調整日期
@@ -164,14 +229,16 @@ class Window(tk.Tk):
         else:
             for var in self.city_vars.values():
                 var.set(True)
-
+    def get_weather_values(self):       #取得天氣結果的方法，參考用
+        values = {weather: var.get() for weather, var in self.weather_vars.items()}
+        print(values)
     
 
 def main():
 
     window = Window()
     window.title('全台近年交通事故資料表')
-    window.geometry("1200x800")
+    window.geometry("1400x800")
     window.mainloop()
 
 if __name__ == '__main__':
