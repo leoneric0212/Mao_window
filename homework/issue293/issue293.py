@@ -1,16 +1,17 @@
 import data
-data.load_data()
-import data
-
-all_data:list[dict]=data.load_data()
 import psycopg2
-conn=psycopg2.connect("postgresql://tvdi_09yy_user:XIo11qROxXzCLwzG2n8bsYnIH9aOv2k8@dpg-cpsctgt6l47c73e3hdr0-a.singapore-postgres.render.com/tvdi_09yy")    #建立連線
+import os
+from dotenv import load_dotenv
+load_dotenv()
+data.load_data()
+all_data:list[dict]=data.load_data()
+conn=psycopg2.connect(os.environ['POSTGRESQL_TOKEN'])    #建立連線
 with conn:
     with conn.cursor() as cursor:
         sql='''
         create table if not exists youbike(
 	    _id serial Primary key,
-	    sna varchar(50) not null,
+	    sna varchar(50) not null unique,
 	    ar varchar(100),
 	    sarea varchar(50),
 	    mday timestamp,
@@ -20,7 +21,6 @@ with conn:
 	    return_bikes smallint,
 	    lat real,
 	    lng real,
-        act bool,
         unique (sna,updatetime)
         );
         '''
@@ -32,7 +32,7 @@ with conn:
     with conn.cursor() as cursor:
         insert_sql='''
         insert into youbike(sna,sarea,ar,mday,updatetime,total,rent_bikes,return_bikes,lat,lng)
-        values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) 
+        values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) 
         on conflict (sna) do update 
         set sna=excluded.sna,
             sarea=excluded.sarea,
