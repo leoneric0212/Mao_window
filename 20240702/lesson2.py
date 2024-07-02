@@ -1,7 +1,16 @@
 import psycopg2
 import data
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+
+
+data.load_data()
+all_data:list[dict]=data.load_data()
+
 def main():
-    conn=psycopg2.connect("postgresql://tvdi_09yy_user:XIo11qROxXzCLwzG2n8bsYnIH9aOv2k8@dpg-cpsctgt6l47c73e3hdr0-a.singapore-postgres.render.com/tvdi_09yy")
+    conn=psycopg2.connect(os.environ['POSTGRESQL_TOKEN'])    #建立連線
     with conn:
         with conn.cursor() as cursor:
             sql='''
@@ -17,17 +26,16 @@ def main():
             return_bikes smallint,
             lat real,
             lng real,
-            act bool
+            act bool,
             unique(sna,updatetime)
-            );
+            ) ;
             '''
             cursor.execute(sql)
-        all_data:list[dict]=data.load_data()
-
         with conn.cursor() as cursor:
             insert_sql='''
             insert into youbike(sna,sarea,ar,mday,updatetime,total,rent_bikes,return_bikes,lat,lng)
-            values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);
+            values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) 
+            on conflict (sna,updatetime) do nothing;
             '''
             for site in all_data:
                 cursor.execute(insert_sql,(site['sna'],
@@ -40,11 +48,7 @@ def main():
                                         site['return_bikes'],
                                         site['lat'],
                                         site['lng']))
-    conn.close()
+    conn.close()    #斷開連線
 
 if __name__=='__main__':
     main()
-
-#insert value on conflict
-#insert value into on
-#table constrains
