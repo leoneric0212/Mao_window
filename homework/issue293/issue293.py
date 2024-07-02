@@ -20,8 +20,7 @@ with conn:
 	    rent_bikes smallint,
 	    return_bikes smallint,
 	    lat real,
-	    lng real,
-        unique (sna,updatetime)
+	    lng real
         );
         '''
         cursor.execute(sql)
