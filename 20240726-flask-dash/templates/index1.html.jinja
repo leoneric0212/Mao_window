@@ -1,0 +1,94 @@
+{% extends 'base.html.jinja' %}
+
+{% block title %}
+首頁
+{% endblock %}
+
+{%block head%}
+{{ super( ) }}
+<style type"text/css">
+    body {
+        background-color: green
+    }
+</style>
+{% endblock %}
+{% block main %}
+<div class="container text-center">
+    <div class="row">
+        <div class="col-md-2 col-xl-3" style="background-color:red">
+            <form action="{{url_for('index')}}" method="get">
+                <select class="form-select" aria-label="Default select example" name="area">
+                    <option selected>{{show_area}}</option>
+                    {% for area in areas %}
+                        {% if area != show_area %}
+                            <option value="{{area}}">{{area}}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-primary">送出</button>
+            </form>
+        </div>
+        <div class="col-md-10 col-xl-9" style="background-color:gray">
+            <h3 style="text-align:left;margin-top:0.5em">{{show_area}}</h3>
+
+        {# 建立表格 #}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                <th scope="col">站點</th>
+                <th scope="col">總車輛數</th>
+                <th scope="col">可借</th>
+                <th scope="col">可還</th>
+                <th scope="col">時間</th>
+                </tr>            
+            </thead>
+            {# 匯入資料 #}
+            <tbody>
+                {% for sna in detail_snaes %}
+                <tr>
+                <th scope="row">{{sna[0]}}</th>
+                <td scope="col">{{sna[1]}}</td>
+                <td scope="col">{{sna[2]}}</td>
+                <td scope="col">{{sna[3]}}</td>
+                <td scope="col">{{sna[4]}}</td>
+                {# 若有設定act欄位，可以這樣敘述
+                {% if {{sna[5]}} %}
+                    <td scope="col">營業中</td>
+                {% else %}
+                    <td scope="col">暫停營運</td> #}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+{%endblock%}
+{# {%block left_content%}
+{{ left | striptags | title }}
+{%endblock%} #}
+
+{# {%block right_content%}
+{{['list', 'of', 'objects']|join('|')}}
+{%endblock%} #}
+{# {%block right_content%}
+{{['list'|join('|'), 'of'|join('|'), 'objects']|join('|')}}
+{%endblock%} #}
+
+{# {% block right_content %}
+<ul>
+    {% for item in ['item1','item2','item3','item4','item5'] %}
+    <li>item</li>
+    {% endfor %}
+</ul>
+{% endblock %} #}
+{#
+{% block right_content %}
+<ul class="nav flex-column">
+    {% for item in ['item1','item2','item3','item4','item5'] %}
+    <li class="nav-item">
+        <a href="#" class="nav-link">{{item}}</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %} #}
