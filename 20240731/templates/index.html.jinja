@@ -13,6 +13,9 @@
 </style>
 {% endblock %}
 {% block main %}
+{% if username %}   {#則為True#}
+    <h3>{{username}}歡迎光臨</h3>
+{% endif %}
 <h1>這是首YEAH</h1>
 {%endblock%}
 {# {%block left_content%}
